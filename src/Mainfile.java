@@ -22,6 +22,9 @@ public class Mainfile {
 	public static void main(String[] args) throws SQLException, ParseException {
 
         boolean Active = true;
+        for (int i = 0; i < 5; i++) 
+        	  System.out.println("    *********".substring(i, 5 + 2*i));
+        System.out.println("WELCOME TO OUR SPA  PORTAL");
         System.out.println("Please enter a code to execcute");
         System.out.println("At any point press 911 for help");
         
@@ -33,8 +36,11 @@ public class Mainfile {
                switch (i) {
                    case 911:
                 	   System.out.println("**** Press 0 to quit *****");
-                	   System.out.println("**** Press 1 to show guests ***");
+                	   System.out.println("**** Press 1 to show guests maybe you want to know your neighbours ***");
                 	   System.out.println("**** Press 2 to increase the salaries of the SPA therapists whose rating is higher than 4 by $200 ***** ");
+                	   System.out.println("**** Press 3 to to  change the status of some rooms to under construction if you notice that  ***** ");
+                	   System.out.println("**** Press 4 If you are ready to make a reservation, ****");
+                	   System.out.println("**** Press 5 If you want to get information about someone who cleanned a specific room ****");
                 	   break;
                    case 0:
                        System.out.println("See you next time");
@@ -52,6 +58,9 @@ public class Mainfile {
                 	   break;
                    case 4:
                 	   MakeReservation();
+                	   break;
+                   case 5:
+                	   whoCleannedThatRoom();
                 	   break;
                 	   
                    
@@ -97,6 +106,7 @@ public class Mainfile {
 	            sqlCode = e.getErrorCode(); // Get SQLCODE
 	            sqlState = e.getSQLState(); // Get SQLSTATE
 	            System.out.println("Code: " + sqlCode + "  sqlState: " + sqlState);
+	            System.out.println("WE ARE VERY SORRY AN ERROR HAPPENED TRY AGAIN");
 	        }
 
 	        // Finally but importantly close the statement and connection
@@ -133,11 +143,12 @@ public class Mainfile {
 		}catch(SQLException e) {
 			error = e.getErrorCode();
 			state = e.getSQLState();
+			System.out.println("WE ARE VERY SORRY AN ERROR HAPPENED TRY AGAIN");
 		}
 
 	}
 	
-	// make some rooms status uncompleted 
+	// make some rooms status under construction 
 		private static void UpdateSparoomStatus() throws SQLException {
 			int error =0;
 			String state ="00000";
@@ -152,9 +163,11 @@ public class Mainfile {
 			con = DriverManager.getConnection(url, usernamestring, passwordstring);
 			Statement stm = con.createStatement();
 			
+			System.out.println("Input the room number you notice is under construction: ");
+	           input.nextLine(); 
+	           int ChosenLocation = input.nextInt();
 			try {
-				String updateSQL = "UPDATE sparoom SET status = 'under construction' where roomnumber >17 ;\n" + 
-						"";
+				String updateSQL = "UPDATE sparoom SET status = 'under construction' where roomnumber = "+ChosenLocation+";";
 				stm.executeUpdate(updateSQL);
 				System.out.println("STATUS UPDATED");
 						
@@ -162,6 +175,7 @@ public class Mainfile {
 				error = e.getErrorCode();
 				state = e.getSQLState();
 	            System.out.println("Code: " + error + "  sqlState: " + state);
+	            System.out.println("WE ARE VERY SORRY AN ERROR HAPPENED TRY AGAIN");
 
 			}
 			stm.close();
@@ -197,6 +211,7 @@ public class Mainfile {
 	        	   error = e.getErrorCode();
 	        	   state= e.getSQLState();
 	        	   System.out.println("Error :" + error + "state"+state);
+	        	   System.out.println("WE ARE VERY SORRY AN ERROR HAPPENED TRY AGAIN");
 	        	    
 	           }
 	           
@@ -246,12 +261,61 @@ public class Mainfile {
 				// Your code to handle errors comes here;
 				// something more meaningful than a print would be good
 				System.out.println("Code: " + error + "  sqlState: " + state);
+				System.out.println("WE ARE VERY SORRY AN ERROR HAPPENED TRY AGAIN");
 			}
 			   
 			   
 	           
 	           
 	           
+		}
+		
+		private static void whoCleannedThatRoom() throws SQLException, ParseException {
+			 int sqlCode = 0; // Variable to hold SQLCODE
+		        String sqlState = "00000"; // Variable to hold SQLSTATE
+
+		        // Register the driver. You must register the driver before you can use it.
+		        try {
+		            DriverManager.registerDriver(new org.postgresql.Driver());
+		        } catch (Exception cnfe) {
+		            System.out.println("Class not found");
+		        }
+
+		        con = DriverManager.getConnection(url, usernamestring, passwordstring);
+		        Statement statement = con.createStatement();
+		        
+		        
+		        System.out.println("Input the room number you would like the cleaner's info for: ");
+		           input.nextLine(); 
+		           int ChosenRoom = input.nextInt();
+		        // Querying a table
+		        try {
+		            String querySQL = "SELECT * from IsCleanedBy where roomnumber = "+ChosenRoom+";";
+		            // System.out.println(querySQL);
+		            java.sql.ResultSet rs = statement.executeQuery(querySQL);
+		            while (rs.next()) {
+		                int ID = rs.getInt(1);
+//		                String name = rs.getString(1);
+		                String date = rs.getString(3);
+		                
+		                System.out.print("  EMPLOYEE ID : " + ID);
+		                System.out.print("  CLEAN DATE:   " + date);
+		               
+		                System.out.println("********************************************************************************");
+		            }
+		            System.out.println("DONE");
+		        } catch (SQLException e) {
+		            sqlCode = e.getErrorCode(); // Get SQLCODE
+		            sqlState = e.getSQLState(); // Get SQLSTATE
+		            System.out.println("Code: " + sqlCode + "  sqlState: " + sqlState);
+		            System.out.println("WE ARE VERY SORRY AN ERROR HAPPENED TRY AGAIN");
+		        }
+
+		        // Finally but importantly close the statement and connection
+		        statement.close();
+		        con.close();
+			
+			
 		}
         
 
