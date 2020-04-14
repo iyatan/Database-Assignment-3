@@ -22,10 +22,8 @@ public class Mainfile {
 	public static void main(String[] args) throws SQLException, ParseException {
 
         boolean Active = true;
-        for (int i = 0; i < 5; i++) 
-        	  System.out.println("    *********".substring(i, 5 + 2*i));
         System.out.println("WELCOME TO OUR SPA  PORTAL");
-        System.out.println("Please enter a code to execcute");
+        System.out.println("Please enter a code to execute");
         System.out.println("At any point press 911 for help");
         
 
@@ -145,6 +143,8 @@ public class Mainfile {
 			state = e.getSQLState();
 			System.out.println("WE ARE VERY SORRY AN ERROR HAPPENED TRY AGAIN");
 		}
+		stm.close();
+		con.close();
 
 	}
 	
@@ -263,10 +263,9 @@ public class Mainfile {
 				System.out.println("Code: " + error + "  sqlState: " + state);
 				System.out.println("WE ARE VERY SORRY AN ERROR HAPPENED TRY AGAIN");
 			}
-			   
-			   
-	           
-	           
+	           stm.close();
+			   con.close();
+			 
 	           
 		}
 		
