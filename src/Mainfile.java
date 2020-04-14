@@ -1,4 +1,5 @@
 
+import java.util.*;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
@@ -18,11 +19,12 @@ public class Mainfile {
     private static Scanner input;
 
 
-	public static void main(String[] args) throws SQLException {
+	public static void main(String[] args) throws SQLException, ParseException {
 
         boolean Active = true;
         System.out.println("Please enter a code to execcute");
         System.out.println("At any point press 911 for help");
+        
 
         input = new Scanner(System.in);
 
@@ -47,6 +49,9 @@ public class Mainfile {
                 	   break;
                    case 3:
                 	   UpdateSparoomStatus();
+                	   break;
+                   case 4:
+                	   MakeReservation();
                 	   break;
                 	   
                    
@@ -163,6 +168,90 @@ public class Mainfile {
 			con.close();
 			
 			
+		}
+		
+		private static void MakeReservation() throws SQLException, ParseException{
+			int error = 0; // Variable to hold SQLCODE
+	           String state = "00000"; // Variable to hold SQLSTATE
+
+	           // Register the driver. You must register the driver before you can use it.
+	           try {
+	               DriverManager.registerDriver(new org.postgresql.Driver());
+	           } catch (Exception cnfe) {
+	               System.out.println("Class not found");
+	           }
+			
+	           con = DriverManager.getConnection(url, usernamestring, passwordstring);
+	           Statement stm = con.createStatement();
+	           // To make sure of the uniqueness of the ids we use a hashset
+	           HashSet<Integer> sessionIds = new HashSet<Integer>();
+	           try {
+	        	   String query = "SELECT sessionid FROM reservation";
+	        	   java.sql.ResultSet result = stm.executeQuery(query);
+	        	   while(result.next()) {
+	        		   int id = result.getInt(1);
+	        		   sessionIds.add(id);
+	        	   }
+	        	   
+	           }catch(SQLException e) {
+	        	   error = e.getErrorCode();
+	        	   state= e.getSQLState();
+	        	   System.out.println("Error :" + error + "state"+state);
+	        	    
+	           }
+	           
+	           Random rdm = new Random();
+	           int newId = (int) rdm.nextInt((9999999 - 1111111) + 1) + 1111111;
+	           
+	           if(sessionIds.contains(newId)) {
+	        	   newId = (int) rdm.nextInt((9999999 - 1111111) + 1) + 1111111;
+	           }
+	           
+	           String begTimeAvl ="0000-00-00 00:00:00";
+	           
+	           HashMap<Integer, String> availableTime = new HashMap<Integer, String>();
+	           ArrayList<String> avTime = new ArrayList<>(Arrays.asList("2020-05-19 14:00:00", "2020-05-20 14:00:00", "2020-06-19 14:00:00","2020-12-19 10:00:00", "2020-12-12 10:00:00"));
+			   int i=1;
+			   while(i<=avTime.size()) {
+				   availableTime.put(i, avTime.get(i-1));
+				   i++;
+			   }
+			   System.out.println();
+			   
+			   System.out.println("Here is the list of avalable time to pick from and how to pick them");
+			   for(Map.Entry<Integer, String> entry : availableTime.entrySet() ) {
+				   System.out.println(" ** To pick " + entry.getValue() + "   Press " + entry.getKey());
+			   }
+			   System.out.println("You can press now: ");
+			   int timeCode = input.nextInt();
+			   
+			   String chosenTime = (String)(availableTime.get(timeCode));
+			   
+			   System.out.println("Set the Number of Positions you want from 1 to 4: ");
+			   
+	           int chosenPosition = input.nextInt();
+	           
+	           try {
+	     	      
+	        	   String insertSQL = "INSERT INTO reservation VALUES ( "+newId+", '"+chosenTime+"', "+chosenPosition+") ";
+//	        	   System.out.println(insertSQL);
+	        	   stm.executeUpdate(insertSQL);
+	        	   System.out.println("CONGRATS YOU HAVE MADE THE RESERVATION");
+
+
+			} catch (SQLException e) {
+				error = e.getErrorCode(); // Get SQLCODE
+				state = e.getSQLState(); // Get SQLSTATE
+
+				// Your code to handle errors comes here;
+				// something more meaningful than a print would be good
+				System.out.println("Code: " + error + "  sqlState: " + state);
+			}
+			   
+			   
+	           
+	           
+	           
 		}
         
 
