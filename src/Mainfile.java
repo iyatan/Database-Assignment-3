@@ -130,11 +130,10 @@ public class Mainfile {
 		Statement stm = con.createStatement();
 		
 		try {
-			String updateSQL = "SELECT employeeID, salary, rating FROM SPATherapist;\n" + 
-					"UPDATE SPATherapist \n" + 
+			String updateSQL ="UPDATE SPATherapist \n" + 
 					"	SET salary = salary + 200\n" + 
-					"	WHERE rating >= 4;\n" + 
-					"SELECT employeeID, salary, rating FROM SPATherapist;";
+					"	WHERE rating >= 4;";
+			System.out.println(updateSQL);
 			stm.executeUpdate(updateSQL);
 			System.out.println("SALARIES UPDATED");
 					
