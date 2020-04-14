@@ -133,7 +133,6 @@ public class Mainfile {
 			String updateSQL ="UPDATE SPATherapist \n" + 
 					"	SET salary = salary + 200\n" + 
 					"	WHERE rating >= 4;";
-			System.out.println(updateSQL);
 			stm.executeUpdate(updateSQL);
 			System.out.println("SALARIES UPDATED");
 					
