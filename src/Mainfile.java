@@ -26,19 +26,14 @@ public class Mainfile {
         System.out.println("Please enter a code to execute");
         System.out.println("At any point press 911 for help");
         
-
         input = new Scanner(System.in);
 
         while (Active) {
+        	help();
         	   int i = (int) input.nextInt();
                switch (i) {
                    case 911:
-                	   System.out.println("**** Press 0 to quit *****");
-                	   System.out.println("**** Press 1 to show guests maybe you want to know your neighbours ***");
-                	   System.out.println("**** Press 2 to increase the salaries of the SPA therapists whose rating is higher than 4 by $200 ***** ");
-                	   System.out.println("**** Press 3 to to  change the status of some rooms to under construction if you notice that  ***** ");
-                	   System.out.println("**** Press 4 If you are ready to make a reservation, ****");
-                	   System.out.println("**** Press 5 If you want to get information about someone who cleanned a specific room ****");
+                	   help();
                 	   break;
                    case 0:
                        System.out.println("See you next time");
@@ -60,8 +55,6 @@ public class Mainfile {
                    case 5:
                 	   whoCleannedThatRoom();
                 	   break;
-                	   
-                   
                    default:
                        System.out.println("Sorry we dont know this command");
                        break;
@@ -69,7 +62,17 @@ public class Mainfile {
         }
 
 	}
-}
+}   
+	
+	public static void help() {
+		System.out.println("**** Press 0 to quit *****");
+ 	   	System.out.println("**** Press 1 to show all guests ***");
+ 	   	System.out.println("**** Press 2 to increase the salaries of the SPA therapists whose rating is higher than 4 by $200 ***** ");
+ 	   	System.out.println("**** Press 3 to to  change the status of some rooms to under construction if you notice that  ***** ");
+ 	   	System.out.println("**** Press 4 If you are ready to make a reservation, ****");
+ 	   	System.out.println("**** Press 5 If you want to get information about someone who cleanned a specific room ****");
+		
+	}
 	//quering a table
 	private static void SelectingGuess() throws SQLException {
 		 int sqlCode = 0; // Variable to hold SQLCODE
@@ -161,7 +164,7 @@ public class Mainfile {
 			con = DriverManager.getConnection(url, usernamestring, passwordstring);
 			Statement stm = con.createStatement();
 			
-			System.out.println("Input the room number you notice is under construction: ");
+			System.out.println("Input the room number you notice is under construction (1-20): ");
 	           input.nextLine(); 
 	           int ChosenLocation = input.nextInt();
 			try {
@@ -239,7 +242,6 @@ public class Mainfile {
 			   int timeCode = input.nextInt();
 			   
 			   String chosenTime = (String)(availableTime.get(timeCode));
-			   
 			   System.out.println("Set the Number of Positions you want from 1 to 4: ");
 			   
 	           int chosenPosition = input.nextInt();
